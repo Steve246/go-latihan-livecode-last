@@ -4,10 +4,15 @@ import "go_livecode_persiapan/repo"
 
 type RepositoryManager interface {
 	MenuRepo() repo.MenuRepository
+	MenuPriceRepo() repo.MenuPriceRepository
 }
 
 type repositoryManager struct {
 	infra Infra
+}
+
+func (r *repositoryManager) MenuPriceRepo() repo.MenuPriceRepository {
+	return repo.NewMenuPriceRepository(r.infra.SqlDb())
 }
 
 func (r *repositoryManager) MenuRepo() repo.MenuRepository {

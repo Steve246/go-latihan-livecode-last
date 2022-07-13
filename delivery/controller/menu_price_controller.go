@@ -9,15 +9,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type MenuController struct {
+type MenuPriceController struct {
 	router *gin.Engine
 
-	ucCrudMenu usecase.CrudMenuUseCase
-
+	ucCrudMenuPrice usecase.CrudMenuPriceUseCase
 }
 
-func (m *MenuController) updateMenu (c *gin.Context){
-	var menu *model.Menu
+func (m *MenuPriceController) updateMenuPrice (c *gin.Context){
+	var menu *model.Menu_Price
 
 	//pake patch
 	//find by id --> update pake id
@@ -31,7 +30,7 @@ func (m *MenuController) updateMenu (c *gin.Context){
 			"message": err.Error(),
 		})
 	} else {
-		err := m.ucCrudMenu.UpdateMenu(menu, id)
+		err := m.ucCrudMenuPrice.UpdateMenu(menu, id)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 				"error": "Record not found!",
@@ -48,12 +47,12 @@ func (m *MenuController) updateMenu (c *gin.Context){
 
 }
 
-func(m *MenuController) deleteMenu (c *gin.Context){
+func(m *MenuPriceController) deleteMenuPrice (c *gin.Context){
 
 	id := c.Param("id")
 
 
-	err := m.ucCrudMenu.DeleteMenu(id)
+	err := m.ucCrudMenuPrice.DeleteMenu(id)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": "Record not found!",
@@ -67,17 +66,15 @@ func(m *MenuController) deleteMenu (c *gin.Context){
 
 }
 
-
-
-func(m *MenuController) createNewMenu(c *gin.Context){
-	var newMenu *model.Menu
+func(m *MenuPriceController) createNewMenuPrice(c *gin.Context){
+	var newMenu *model.Menu_Price
 
 	if err := c.BindJSON(&newMenu); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
 	} else {
-		err := m.ucCrudMenu.CreateMenu(newMenu)
+		err := m.ucCrudMenuPrice.CreateMenu(newMenu)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 				"status":  "FAILED",
@@ -95,18 +92,18 @@ func(m *MenuController) createNewMenu(c *gin.Context){
 }
 
 
-func NewMenuController(router *gin.Engine, ucCrudMenu usecase.CrudMenuUseCase) *MenuController {
+func NewMenuPriceController(router *gin.Engine, ucCrudMenuPrice usecase.CrudMenuPriceUseCase) *MenuPriceController {
 
-	controller := MenuController{
+	controller := MenuPriceController{
 		router: router,
-		ucCrudMenu: ucCrudMenu,
+		ucCrudMenuPrice:ucCrudMenuPrice,
 	}
 
-	router.POST("/menu", controller.createNewMenu)
+	router.POST("/menuPrice", controller.createNewMenuPrice)
 
-	router.DELETE("/menu/:id", controller.deleteMenu)
+	router.DELETE("/menuPrice/:id", controller.deleteMenuPrice)
 
-	router.PUT("/menu/:id", controller.updateMenu)
+	router.PUT("/menuPrice/:id", controller.updateMenuPrice)
 
 
 	return &controller
