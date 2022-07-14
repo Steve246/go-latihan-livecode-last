@@ -98,6 +98,8 @@ func(m *MenuController) createNewMenu(c *gin.Context){
 }
 
 
+
+
 func NewMenuController(router *gin.Engine, ucCrudMenu usecase.CrudMenuUseCase) *MenuController {
 
 	controller := MenuController{
@@ -112,6 +114,34 @@ func NewMenuController(router *gin.Engine, ucCrudMenu usecase.CrudMenuUseCase) *
 	tokenService := utils.NewTokenService(cfg.TokenConfig)
 
 	routerGroup := router.Group("/api")
+
+	routerGroup.POST("/auth/login", func(c *gin.Context){
+
+		var user model.Credential
+
+
+		if err := c.BindJSON(&user); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H {
+				"message": "cant't bind struct",
+			})
+			return 
+		}
+
+		if user.Username == "enigma" && user.Password == "123" {
+			token, err := tokenService.CreateAccessToken(&user)
+
+			if err != nil {
+				c.AbortWithStatus(http.StatusUnauthorized)
+				return 
+			}
+			c.JSON(200, gin.H {
+				"token": token,
+			})
+		} else {
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
+
+	})
 
 	protectedGroup := routerGroup.Group("/master", middleware.NewTokenValidator(tokenService).RequireToken())
 	

@@ -3,6 +3,7 @@ package config
 import (
 	"time"
 
+	"github.com/go-redis/redis"
 	"github.com/golang-jwt/jwt"
 )
 
@@ -12,6 +13,7 @@ type TokenConfig struct {
 	JwtSigningMethod *jwt.SigningMethodHMAC
 	JwtSignatureKey string 
 	AccessTokenLifeTime time.Duration
+	Client *redis.Client
 }
 
 
@@ -26,6 +28,11 @@ func (c ConfigJWT) readConfigJWT() ConfigJWT {
 	JwtSigningMethod: jwt.SigningMethodHS256,
 	JwtSignatureKey: "31N!GMA",
 	AccessTokenLifeTime: 60 * time.Second,
+	Client: redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0,
+	}),
 		
 	}
 	return c
