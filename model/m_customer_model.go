@@ -5,7 +5,7 @@ type Customer struct {
 	Customer_Name   string      `json:"customerName"`
 	Mobile_Phone_No string      `json:"customerPhone"`
 	Is_Member       int         `gorm:"default:0" json:"isStatus"`
-	Discount        []*Discount `gorm:"many2many:customer_discount"`
+	Discount        []*Discount `gorm:"many2many:customer_discount" json:"discount"`
 	BaseModel       BaseModel   `gorm:"embedded"`
 }
 

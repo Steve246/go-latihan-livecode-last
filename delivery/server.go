@@ -48,6 +48,18 @@ func (a *appServer) iniController() {
 		a.engine,
 		a.useCaseManager.CrudTableUseCase(),
 	)
+
+	controller.NewTransTypeController(
+		a.engine,
+		a.useCaseManager.CrudTransTypeUseCase(),
+	)
+
+	controller.NewDiscountController(
+		a.engine,
+		a.useCaseManager.CrudDiscountUseCase(),
+	)
+
+
 }
 
 

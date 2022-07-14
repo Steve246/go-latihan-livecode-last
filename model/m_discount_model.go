@@ -4,7 +4,7 @@ type Discount struct {
 	Id          string      `gorm:"primaryKey" json:"discountId"`
 	Description string      `gorm:"size:50" json:"discountDesc"`
 	Pct         int         `json:"discountValue"`
-	Customer    []*Customer `gorm:"many2many:customer_discount"`
+	Customer    []*Customer `gorm:"many2many:customer_discount" json:"customer"`
 	BaseModel   BaseModel   `gorm:"embedded"`
 }
 
