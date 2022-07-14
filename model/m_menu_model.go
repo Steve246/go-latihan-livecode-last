@@ -1,9 +1,9 @@
 package model
 
 type Menu struct {
-	Id        string `gorm:"not null" json:"id"`
-	Menu_Name string `gorm:"size:50; not null" json:"menu_name"`
-	BaseModel BaseModel
+	Id        string    `gorm:"not null" json:"id"`
+	Menu_Name string    `gorm:"size:50; not null" json:"menu_name"`
+	BaseModel BaseModel `gorm:"embedded"`
 }
 
 func (m Menu) TableName() string {
