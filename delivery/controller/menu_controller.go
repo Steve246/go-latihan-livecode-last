@@ -107,6 +107,14 @@ func NewMenuController(router *gin.Engine, ucCrudMenu usecase.CrudMenuUseCase) *
 		ucCrudMenu: ucCrudMenu,
 	}
 
+	//tanpa jwt
+
+	router.POST("/menuPrice", controller.createNewMenu)
+
+	router.DELETE("/menuPrice/:id", controller.deleteMenu)
+
+	router.PUT("/menuPrice/:id", controller.updateMenu)
+
 	//nambain JWT
 
 	cfg := config.NewConfigJWT()
