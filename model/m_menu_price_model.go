@@ -3,9 +3,9 @@ package model
 type Menu_Price struct {
 	Id string `gorm:"primaryKey"`
 
-	MenuId string 
+	MenuId string
 
-	Menus []Menu `gorm:"foreignKey:MenuId" json:"menu"`
+	Menus Menu `gorm:"foreignKey:MenuId" json:"menu"`
 
 	Price     int       `json:"menuPrice"`
 	BaseModel BaseModel `gorm:"embedded"`
