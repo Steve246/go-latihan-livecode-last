@@ -17,7 +17,7 @@ type crudMenuPriceUseCase struct {
 }
 
 func (c *crudMenuPriceUseCase) UpdateMenu(menuFood *model.Menu_Price, id string) error{
-	return c.repo.Delete(id)
+	return c.repo.Update(menuFood, id)
 }
 
 func (c *crudMenuPriceUseCase) DeleteMenu(id string) error{
