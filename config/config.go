@@ -16,9 +16,19 @@ type DbConfig struct {
 type Config struct {
 	ApiConfig
 	DbConfig
+
+	
 }
 
-func (c *Config) readConfig() {
+// //nambain tokenConfig untuk login
+// type TokenConfig struct {
+// 	ApplicationName  string
+// 	JwtSigningMethod *jwt.SigningMethodHMAC
+// 	JwtSignatureKey string 
+// 	AccessTokenLifeTime time.Duration
+// }
+
+func (c *Config) readConfig()  {
 	api := os.Getenv("API_URL")
 	//set API_URL=localhost:8888
 	// c.ApiConfig = ApiConfig{Url: api}
@@ -36,6 +46,16 @@ func (c *Config) readConfig() {
 
 	c.DbConfig = DbConfig{DataSourceName: dsn}
 	c.ApiConfig = ApiConfig{Url: api}
+
+	//nambain token config
+	// c.TokenConfig = TokenConfig{
+	// 	ApplicationName:  "Enigma",
+	// 	JwtSigningMethod: jwt.SigningMethodHS256,
+	// 	JwtSignatureKey: "31N!GMA",
+	// 	AccessTokenLifeTime: 60 * time.Second,
+			
+	// 	}
+	// return c
 }
 
 func NewConfig() Config {
