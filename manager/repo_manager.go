@@ -15,10 +15,16 @@ type RepositoryManager interface {
 
 	TransacRepo() repo.TransacRepository
 
+	LopeiRepo() repo.LopeiRepository
+
 }
 
 type repositoryManager struct {
 	infra Infra
+}
+
+func (r *repositoryManager) LopeiRepo() repo.LopeiRepository{
+	return repo.NewLopeiRepository()
 }
 
 func (r *repositoryManager) TransacRepo() repo.TransacRepository {

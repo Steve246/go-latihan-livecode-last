@@ -8,6 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+
+
 type appServer struct {
 	useCaseManager manager.UseCaseManager
 	engine         *gin.Engine
@@ -76,3 +78,4 @@ func (a *appServer) Run() {
 		panic(err)
 	}
 }
+
