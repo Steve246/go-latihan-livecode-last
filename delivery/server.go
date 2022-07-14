@@ -59,6 +59,11 @@ func (a *appServer) iniController() {
 		a.useCaseManager.CrudDiscountUseCase(),
 	)
 
+	controller.NewCustomerController(
+		a.engine,
+		a.useCaseManager.CrudCustomerUseCase(),
+	)
+
 
 }
 
