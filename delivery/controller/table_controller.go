@@ -12,15 +12,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type MenuController struct {
+type TableController struct {
 	router *gin.Engine
 
-	ucCrudMenu usecase.CrudMenuUseCase
-
+	ucCrudTable usecase.CrudTableUseCase
 }
 
-func (m *MenuController) updateMenu (c *gin.Context){
-	var menu *model.Menu
+func(m *TableController) updateTable (c *gin.Context) {
+	var table *model.Table
 
 	//pake patch
 	//find by id --> update pake id
@@ -29,12 +28,12 @@ func (m *MenuController) updateMenu (c *gin.Context){
 
 	// var updateMenu map[string]interface{}
 
-	if err := c.BindJSON(&menu); err != nil {
+	if err := c.BindJSON(&table); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
 	} else {
-		err := m.ucCrudMenu.UpdateMenu(menu, id)
+		err := m.ucCrudTable.UpdateTable(table, id)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 				"error": "Record not found!",
@@ -43,20 +42,18 @@ func (m *MenuController) updateMenu (c *gin.Context){
 		}
 		c.JSON(http.StatusOK, gin.H{
 			"status":  "Update is Success",
-			"message": menu,
+			"message": table,
 		})
 
 	}
 
-
 }
 
-func(m *MenuController) deleteMenu (c *gin.Context){
-
+func(m *TableController) deleteTable(c *gin.Context) {
 	id := c.Param("id")
 
 
-	err := m.ucCrudMenu.DeleteMenu(id)
+	err := m.ucCrudTable.DeleteTable(id)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": "Record not found!",
@@ -67,20 +64,17 @@ func(m *MenuController) deleteMenu (c *gin.Context){
 			"status": fmt.Sprintf("Successfully deleted user: %s", id),
 			// "message": newMenu,
 		})
-
 }
 
+func(m *TableController) createNewTable(c *gin.Context){
+	var newTable *model.Table
 
-
-func(m *MenuController) createNewMenu(c *gin.Context){
-	var newMenu *model.Menu
-
-	if err := c.BindJSON(&newMenu); err != nil {
+	if err := c.BindJSON(&newTable); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
 	} else {
-		err := m.ucCrudMenu.CreateMenu(newMenu)
+		err := m.ucCrudTable.CreateTable(newTable)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 				"status":  "FAILED",
@@ -90,30 +84,27 @@ func(m *MenuController) createNewMenu(c *gin.Context){
 		}
 		c.JSON(http.StatusOK, gin.H{
 			"status":  "success",
-			"message": newMenu,
+			"message": newTable,
 		})
 
 	}
 
 }
 
+func NewTableController(router *gin.Engine, ucCrudTable usecase.CrudTableUseCase) *TableController {
 
-
-
-func NewMenuController(router *gin.Engine, ucCrudMenu usecase.CrudMenuUseCase) *MenuController {
-
-	controller := MenuController{
+	controller := TableController{
 		router: router,
-		ucCrudMenu: ucCrudMenu,
+		ucCrudTable:ucCrudTable ,
 	}
 
 	//tanpa jwt
 
-	router.POST("/menu", controller.createNewMenu)
+	router.POST("/table", controller.createNewTable)
 
-	router.DELETE("/menu/:id", controller.deleteMenu)
+	router.DELETE("/table/:id", controller.deleteTable)
 
-	router.PUT("/menu/:id", controller.updateMenu)
+	router.PUT("/table/:id", controller.updateTable)
 
 	//nambain JWT
 
@@ -123,7 +114,7 @@ func NewMenuController(router *gin.Engine, ucCrudMenu usecase.CrudMenuUseCase) *
 
 	routerGroup := router.Group("/api")
 
-	routerGroup.POST("/auth/loginTable", func(c *gin.Context){
+	routerGroup.POST("/auth/login", func(c *gin.Context){
 
 		var user model.Credential
 
@@ -152,13 +143,12 @@ func NewMenuController(router *gin.Engine, ucCrudMenu usecase.CrudMenuUseCase) *
 	})
 
 	protectedGroup := routerGroup.Group("/master", middleware.NewTokenValidator(tokenService).RequireToken())
-	
 
-	protectedGroup.POST("/menu", controller.createNewMenu)
+	protectedGroup.POST("/table", controller.createNewTable)
 
-	protectedGroup.DELETE("/menu/:id", controller.deleteMenu)
+	protectedGroup.DELETE("/table/:id", controller.deleteTable)
 
-	protectedGroup.PUT("/menu/:id", controller.updateMenu)
+	protectedGroup.PUT("/table/:id", controller.updateTable)
 
 
 	return &controller

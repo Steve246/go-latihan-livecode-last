@@ -43,6 +43,11 @@ func (a *appServer) iniController() {
 		a.engine,
 		a.useCaseManager.CrudMenuPriceUseCase(),
 	)
+
+	controller.NewTableController(
+		a.engine,
+		a.useCaseManager.CrudTableUseCase(),
+	)
 }
 
 

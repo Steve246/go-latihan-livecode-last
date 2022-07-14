@@ -2,8 +2,11 @@ package controller
 
 import (
 	"fmt"
+	"go_livecode_persiapan/config"
+	"go_livecode_persiapan/delivery/middleware"
 	"go_livecode_persiapan/model"
 	"go_livecode_persiapan/usecase"
+	"go_livecode_persiapan/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -99,11 +102,58 @@ func NewMenuPriceController(router *gin.Engine, ucCrudMenuPrice usecase.CrudMenu
 		ucCrudMenuPrice:ucCrudMenuPrice,
 	}
 
+	//tanpa jwt
+
 	router.POST("/menuPrice", controller.createNewMenuPrice)
 
 	router.DELETE("/menuPrice/:id", controller.deleteMenuPrice)
 
 	router.PUT("/menuPrice/:id", controller.updateMenuPrice)
+
+	//nambain JWT
+
+	cfg := config.NewConfigJWT()
+
+	tokenService := utils.NewTokenService(cfg.TokenConfig)
+
+	routerGroup := router.Group("/api")
+
+	routerGroup.POST("/auth/loginMenuPrice", func(c *gin.Context){
+
+		var user model.Credential
+
+
+		if err := c.BindJSON(&user); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H {
+				"message": "cant't bind struct",
+			})
+			return 
+		}
+
+		if user.Username == "enigma" && user.Password == "123" {
+			token, err := tokenService.CreateAccessToken(&user)
+
+			if err != nil {
+				c.AbortWithStatus(http.StatusUnauthorized)
+				return 
+			}
+			c.JSON(200, gin.H {
+				"token": token,
+			})
+		} else {
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
+
+	})
+
+	protectedGroup := routerGroup.Group("/master", middleware.NewTokenValidator(tokenService).RequireToken())
+	
+
+	protectedGroup.POST("/menuPrice", controller.createNewMenuPrice)
+
+	protectedGroup.DELETE("/menuPrice/:id", controller.deleteMenuPrice)
+
+	protectedGroup.PUT("/menuPrice/:id", controller.updateMenuPrice)
 
 
 	return &controller

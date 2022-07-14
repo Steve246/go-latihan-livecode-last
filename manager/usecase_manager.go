@@ -14,11 +14,23 @@ type UseCaseManager interface {
 	CrudTableUseCase() usecase.CrudTableUseCase
 
 	CrudTransTypeUseCase() usecase.CrudTransTypeUseCase
+
+	CrudTransacDetailUseCase() usecase.CrudTransacDetailUseCase
+
+	CrudTransacUseCase() usecase.CrudTransacUseCase
 	
 }
 
 type useCaseManager struct {
 	repoManager RepositoryManager
+}
+
+func (u *useCaseManager) CrudTransacUseCase() usecase.CrudTransacUseCase {
+	return usecase.NewCrudTransacUseCase(u.repoManager.TransacRepo())
+}
+
+func (u *useCaseManager) CrudTransacDetailUseCase() usecase.CrudTransacDetailUseCase {
+	return usecase.NewCrudTransacDetailUseCase(u.repoManager.TransacDetailRepo())
 }
 
 func (u *useCaseManager) CrudTransTypeUseCase() usecase.CrudTransTypeUseCase {

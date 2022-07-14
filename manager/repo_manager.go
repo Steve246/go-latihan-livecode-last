@@ -11,10 +11,22 @@ type RepositoryManager interface {
 	TableRepo() repo.TableRepository
 	TransTypeRepo() repo.TransTypeRepository
 
+	TransacDetailRepo() repo.TransacDetailRepository
+
+	TransacRepo() repo.TransacRepository
+
 }
 
 type repositoryManager struct {
 	infra Infra
+}
+
+func (r *repositoryManager) TransacRepo() repo.TransacRepository {
+	return repo.NewTransacRepository(r.infra.SqlDb())
+}
+
+func (r *repositoryManager) TransacDetailRepo() repo.TransacDetailRepository {
+	return repo.NewTransacDetailRepository(r.infra.SqlDb())
 }
 
 func (r *repositoryManager) TransTypeRepo() repo.TransTypeRepository {
