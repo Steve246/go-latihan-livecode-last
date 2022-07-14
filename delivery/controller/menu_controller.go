@@ -2,8 +2,11 @@ package controller
 
 import (
 	"fmt"
+	"go_livecode_persiapan/config"
+	"go_livecode_persiapan/delivery/middleware"
 	"go_livecode_persiapan/model"
 	"go_livecode_persiapan/usecase"
+	"go_livecode_persiapan/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -102,11 +105,22 @@ func NewMenuController(router *gin.Engine, ucCrudMenu usecase.CrudMenuUseCase) *
 		ucCrudMenu: ucCrudMenu,
 	}
 
-	router.POST("/menu", controller.createNewMenu)
+	//nambain JWT
 
-	router.DELETE("/menu/:id", controller.deleteMenu)
+	cfg := config.NewConfigJWT()
 
-	router.PUT("/menu/:id", controller.updateMenu)
+	tokenService := utils.NewTokenService(cfg.TokenConfig)
+
+	routerGroup := router.Group("/api")
+
+	protectedGroup := routerGroup.Group("/master", middleware.NewTokenValidator(tokenService).RequireToken())
+	
+
+	protectedGroup.POST("/menu", controller.createNewMenu)
+
+	protectedGroup.DELETE("/menu/:id", controller.deleteMenu)
+
+	protectedGroup.PUT("/menu/:id", controller.updateMenu)
 
 
 	return &controller

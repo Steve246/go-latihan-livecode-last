@@ -16,7 +16,7 @@ type Token interface {
 }
 
 type token struct {
-	cfg config.ConfigJWT
+	cfg config.TokenConfig
 }
 
 func (t *token) CreateAccessToken(cred *model.Credential) (string, error) {
@@ -60,7 +60,7 @@ func (t *token) VerifyAccessToken(tokenString string) (jwt.MapClaims, error) {
 	return claims, nil
 }
 
-func NewTokenService(cfg config.ConfigJWT) Token {
+func NewTokenService(cfg config.TokenConfig) Token {
 	return &token{cfg: cfg}
 }
 
